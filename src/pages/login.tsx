@@ -1,133 +1,170 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
     Box, 
-    Button, 
     Container, 
-    FormControl, 
-    Grid, 
-    IconButton, 
-    Input, 
-    InputAdornment, 
-    InputLabel, 
+    Grid,
     Paper, 
+    Typography, 
     TextField, 
-    Typography } from "@mui/material";
-import { 
-    AccountCircle, 
-    Visibility, 
-    VisibilityOff,
-    Login as LoginIcon
-} from "@mui/icons-material";
+    InputAdornment, 
+    IconButton, 
+    Button 
+} from '@mui/material';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
-import React from "react";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import LoginIcon from '@mui/icons-material/Login';
+
+import { useAuth } from '../hooks/auth';
+
+import logoPrincipal from '../assets/Principal.png'; 
 
 interface InputBoxProps {
     children: React.ReactNode;
     icon: React.ReactNode;
-    component?: React.ElementType;
 }
 
-function InputBox({ icon, children, component }: InputBoxProps) {
-
+function InputBox({ icon, children }: InputBoxProps) {
     return (
         <Box 
             sx={{ 
                 display: 'flex', 
                 alignItems: 'flex-end', 
-                borderRadius: 1, 
-                p: 1, 
-                mt: 2,
-                height: 35,
-                width:'100%'
+                width: '100%',
+                mt: 1
             }}
-            component={component}
         >
             {icon}
-            {children}
+            <Box sx={{ width: '100%' }}>
+                {children}
+            </Box>
         </Box>
     )
 }
 
 export function Login() {
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    
-    function handleClickShowPassword(){ setShowPassword((show) => !show);}
-    
-    function handleMouseDownPassword(event: React.MouseEvent<HTMLButtonElement>) {
+    const { autenticar } = useAuth();
+    const navigate = useNavigate();
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
-    
-    function handleMouseUpPassword(event: React.MouseEvent<HTMLButtonElement>){
-        event.preventDefault();
-    };
-    
-    const sxId = React.useId();
-    const standardPasswordId = React.useId();
+
+    async function handleSignIn(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        
+        if (!login || !password) {
+            alert("Preencha o usuário e a senha.");
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            await autenticar({ login, senha: password });
+            navigate('/'); 
+        } catch (error) {
+            console.error("Erro no fluxo de login", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 8, color: 'primary'}}>
-            <Grid container sx={{ flexDirection: "row", alignItems:"center", justifyContent: "center" }} spacing={3}>
-                <Box>
-                    <img src="src\assets\Principal.png" alt="Logo" style={{ maxWidth: '50%', height: 'auto' }} />
-                </Box>
-                <Box 
-                    component={Paper} 
-                    sx={{
-                        p: 2, 
-                        display: 'flex', 
-                        flexDirection: 'column', 
-                        alignItems: 'center', 
-                        gap: 2
-                    }}
-                >
-                    <Box>
-                        <Typography component="h1" color="primary">Login</Typography>
-                    </Box>
+        <Container maxWidth="lg" sx={{ color: 'primary.main' }}>
+            <Grid 
+                container 
+                sx={{ height: '100vh', alignItems: "center", justifyContent: "center" }} 
+                spacing={4}
+            >
+                <Grid sx={{ display: 'flex', justifyContent: 'center', xs: '12', md: '6' }}>
+                    <img src={logoPrincipal} alt="Logo ZB House" style={{ maxWidth: '60%', height: 'auto' }} />
+                </Grid>
 
-                    <InputBox icon={<AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />}>
-                        <TextField 
-                            fullWidth 
-                            id={`${sxId}-input`} 
-                            label="Login" 
-                            variant="standard" 
-                        />
-                    </InputBox>
-
-                    <InputBox 
-                        icon={<LockIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />}
-                        component="form"
+                <Grid sx={{ display: 'flex', justifyContent: 'center', xs:'12', md:'6' }}>
+                    <Paper 
+                        component="form" 
+                        elevation={3}
+                        sx={{
+                            p: 5, 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            alignItems: 'center', 
+                            gap: 3,
+                            width: '100%',
+                            maxWidth: 450,
+                            borderRadius: 2
+                        }}
+                        onSubmit={handleSignIn}
                     >
-                        <FormControl fullWidth variant="standard">
-                            <InputLabel htmlFor={`${standardPasswordId}-input`}>Password</InputLabel>
-                            <Input
-                                autoComplete="false"
-                                id={`${standardPasswordId}-input`}
-                                type={showPassword ? 'text' : 'password'}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                        aria-label={
-                                            showPassword ? 'hide the password' : 'display the password'
-                                        }
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
-                                        onMouseUp={handleMouseUpPassword}
-                                        >
-                                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                            />
-                        </FormControl>
-                    </InputBox>
-                
-                    <Button variant="contained" endIcon={<LoginIcon/>}>
-                        Entrar
-                    </Button>                 
-                </Box>
-            </Grid>
+                        <Typography sx={{fontWeight:'bold'}} component="h1" variant="h4" color="primary">
+                            Bem-vindo
+                        </Typography>
 
+                       
+                        <InputBox icon={<AccountCircle sx={{ color: 'action.active', mr: 2, mb: 0.5 }} />}>
+                            <TextField 
+                                fullWidth 
+                                id="login-input" 
+                                label="Utilizador" 
+                                variant="standard" 
+                                color='primary'
+                                onChange={e => setLogin(e.target.value)}
+                                disabled={isLoading}
+                            />
+                        </InputBox>
+
+                        
+                        <InputBox icon={<LockIcon sx={{ color: 'action.active', mr: 2, mb: 0.5 }} />}>
+                            <TextField
+                                fullWidth
+                                id="password-input"
+                                label="Palavra-passe"
+                                variant="standard"
+                                color="primary"
+                                type={showPassword ? 'text' : 'password'}
+                                onChange={e => setPassword(e.target.value)}
+                                disabled={isLoading}
+                                slotProps={{
+                                    input:{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="alternar visibilidade da senha"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }
+                                }}
+                            />
+                        </InputBox>
+
+                        <Button 
+                            variant="contained" 
+                            size="large"
+                            endIcon={<LoginIcon/>}
+                            type="submit"
+                            disabled={isLoading}
+                            fullWidth
+                            sx={{ mt: 2, py: 1.5 }}
+                        >
+                            {isLoading ? 'Aguarde...' : 'Entrar'}
+                        </Button>                 
+                    </Paper>
+                </Grid>
+            </Grid>
         </Container>
     )
-
 }
