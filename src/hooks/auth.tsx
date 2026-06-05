@@ -1,5 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { api } from "../services/api";
+// import { api } from "../services/api";
+import { apiService } from "../services/request";
+import { handleApiError } from "../services/request/handleApiError";
 
 
 interface UserData {
@@ -40,10 +45,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function autenticar({ login, senha }: { login: string; senha: string }) {
     try {
       
-      const response = await api.post("/login", { login, senha });
+      const response = await apiService.post<UserData>({url: '/login', body: {login, senha }});
 
     
-      const userData = response.data; 
+      const userData = response; 
 
       localStorage.setItem("@zbHouse:user", JSON.stringify(userData));
       setUser(userData);
@@ -51,7 +56,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error: any) {
       console.error(error);
       const mensagemErro = error.response?.data?.message || "Erro ao autenticar. Verifique as suas credenciais.";
-      alert(mensagemErro);
+      handleApiError(mensagemErro);
       throw error; 
     }
   }
