@@ -78,7 +78,7 @@ export function Login() {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ color: 'primary.main' }}>
+        <Box sx={{ width: '100vw' ,minHeight: '100vh', backgroundColor: '#f8fafc', color: 'primary.main' }}>
             <Grid 
                 container 
                 sx={{ height: '100vh', alignItems: "center", justifyContent: "center" }} 
@@ -165,6 +165,6 @@ export function Login() {
                     </Paper>
                 </Grid>
             </Grid>
-        </Container>
+        </Box>
     )
 }
