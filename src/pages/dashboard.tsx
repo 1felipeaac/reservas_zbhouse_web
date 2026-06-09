@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
-import { Box, Card } from "@mui/material";
-import type { Pagamento, Reserva } from "../models";
+import { Box } from "@mui/material";
+import type { Reserva } from "../models";
 import { ReservaCard } from "../components/card";
 import { Carousel } from "../components/carousel";
 
 export function Dashboard() {
   const [reservas, setReservas] = useState<Reserva[]>([]);
-  const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
   const [pagAtual, setPagAtual] = useState(0);
 
   const [paginas, setPaginas] = useState(0);
-  const [elements, setElements] = useState(0);
 
   const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
+    _event: React.ChangeEvent<unknown>,
     value: number,
   ) => {
     setPagAtual(value);
@@ -27,15 +25,13 @@ export function Dashboard() {
           `/reservas/todos?page=${pagAtual - 1}&size=3`,
         );
         const totalPages = response.data.totalPages;
-        const totalElements = response.data.totalElements;
 
         console.log(response);
         const reservasData = response.data.content;
         setReservas(reservasData);
-        setElements(totalElements);
         setPaginas(totalPages);
-      } catch (err) {
-        throw new Error("Não foi possível listar as reservas!");
+      } catch (err: unknown) {
+        throw new Error("Não foi possível listar as reservas!", { cause: err });
       }
     }
     listarReservas();

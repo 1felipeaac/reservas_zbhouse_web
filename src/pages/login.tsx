@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-    Box, 
-    Container, 
+    Box,
     Grid,
     Paper, 
     Typography, 
     TextField, 
     InputAdornment, 
     IconButton, 
-    Button 
+    Button
 } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
@@ -20,20 +19,23 @@ import LoginIcon from '@mui/icons-material/Login';
 import { useAuth } from '../hooks/auth';
 
 import logoPrincipal from '../assets/Principal.png'; 
+import { ShowSnackbar } from '../components/show-snackbar';
 
 interface InputBoxProps {
     children: React.ReactNode;
     icon: React.ReactNode;
 }
 
+
 function InputBox({ icon, children }: InputBoxProps) {
+    
     return (
         <Box 
             sx={{ 
                 display: 'flex', 
                 alignItems: 'flex-end', 
                 width: '100%',
-                mt: 1
+                mt: 1,
             }}
         >
             {icon}
@@ -50,6 +52,14 @@ export function Login() {
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
+    const [open, setOpen] = React.useState(false);
+    const [error, setError] = useState('');
+
+    function onClose(){
+        setOpen(false)
+        setError('')
+    }
+
     const { autenticar } = useAuth();
     const navigate = useNavigate();
 
@@ -62,7 +72,11 @@ export function Login() {
         e.preventDefault();
         
         if (!login || !password) {
-            alert("Preencha o usuário e a senha.");
+            setOpen(true)
+            setError("Preencha o usuário e a senha.")
+
+            setTimeout(onClose, 4000)
+            // alert("Preencha o usuário e a senha.");
             return;
         }
 
@@ -78,7 +92,7 @@ export function Login() {
     }
 
     return (
-        <Box sx={{ width: '100vw' ,minHeight: '100vh', backgroundColor: '#1288fd', color: 'primary.main' }}>
+        <Box sx={{ width: '100vw' ,minHeight: '100vh', backgroundColor: '#0694cc', color: 'primary.main' }}>
             <Grid 
                 container 
                 sx={{ height: '100vh', alignItems: "center", justifyContent: "center" }} 
@@ -124,6 +138,7 @@ export function Login() {
                         
                         <InputBox icon={<LockIcon sx={{ color: 'action.active', mr: 2, mb: 0.5 }} />}>
                             <TextField
+                                autoComplete='false'
                                 fullWidth
                                 id="password-input"
                                 label="Palavra-passe"
@@ -165,6 +180,7 @@ export function Login() {
                     </Paper>
                 </Grid>
             </Grid>
+            {open && <ShowSnackbar message={error} onClose={onClose} open={open}/>}
         </Box>
     )
 }

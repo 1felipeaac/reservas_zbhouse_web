@@ -18,7 +18,6 @@ function App() {
 
           <Route element={<ProtectedRoute />}>
             
-            
             <Route element={<LayoutMain />}>
               <Route path="/" element={<Dashboard/>} />
             </Route>
