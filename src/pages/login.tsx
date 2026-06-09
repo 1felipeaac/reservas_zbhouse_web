@@ -78,7 +78,7 @@ export function Login() {
     }
 
     return (
-        <Box sx={{ width: '100vw' ,minHeight: '100vh', backgroundColor: '#f8fafc', color: 'primary.main' }}>
+        <Box sx={{ width: '100vw' ,minHeight: '100vh', backgroundColor: '#1288fd', color: 'primary.main' }}>
             <Grid 
                 container 
                 sx={{ height: '100vh', alignItems: "center", justifyContent: "center" }} 
