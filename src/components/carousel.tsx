@@ -23,19 +23,22 @@ export function Carousel({
         maxWidth: 1024,
         display: "flex",
         flexDirection: "column",
-        gap: 2,
-        alignItems: "center",
-        justifyContent: "center",
+        // gap: 2,
+        // alignItems: "center",
+        // justifyContent: "center",
       }}
     >
       <Box
         sx={{
           display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           gap: 2,
           overflowX: "auto",
           pb: 2,
           px: 1,
-
+          pt: 2,
+          flexWrap: "wrap",
           scrollSnapType: "x mandatory",
           "&::-webkit-scrollbar": { height: "8px" },
           "&::-webkit-scrollbar-track": {

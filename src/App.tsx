@@ -4,6 +4,7 @@ import { Login } from './pages/login'
 import { ProtectedRoute } from './routes/protected-route'
 import { LayoutMain } from './components/layout-main'
 import { Dashboard } from './pages/dashboard'
+import { Form } from './pages/form'
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
             
             <Route element={<LayoutMain />}>
               <Route path="/" element={<Dashboard/>} />
+              <Route path="/reservas" element={<Form/>}/>
             </Route>
 
           </Route>

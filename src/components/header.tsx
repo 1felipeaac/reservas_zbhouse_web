@@ -3,6 +3,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useState } from "react";
 import { useAuth } from "../hooks/auth";
 import { Sidebar } from "./sidebar";
+import SearchBar from "./search-bar";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,7 +15,7 @@ export function Header() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        maxWidth: "60rem",
+        // maxWidth: "60rem",
         px: 3,
         py: 2,
       }}
@@ -22,6 +23,8 @@ export function Header() {
       <Typography variant="h6" sx={{ fontWeight: "bold", color: "white" }}>
         ZB House
       </Typography>
+
+      <SearchBar/>
 
       <IconButton
         onClick={(e) => {
